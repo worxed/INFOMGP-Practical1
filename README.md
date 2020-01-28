@@ -14,13 +14,13 @@ This is the repository for the skeleton on which you will build your first exerc
 
 ## Scope
 
-The basic scenario is limited in scope to convex objects, and includes no air resistance or friction. The environment loads scenes that describe a set of objects, and their positions in space. The world contains a big, immobile (fixed) plate on which the objects fall. There are no ambient forces in the basic setting other than earth's gravity, pulling towards the negative $y$ axis.
+The basic scenario is limited in scope to convex objects, and includes no air resistance or friction. The environment loads scenes that describe a set of objects, and their positions in space. The world contains a big, immobile (fixed) plate on which the objects fall. There are no ambient forces in the basic setting other than earth's gravity, pulling towards the negative y-axis.
 
 The environment is already configured to run in a time loop, where it detects collisions in each step. Collisions are assumed to be with a single point of contact per object per time-frame, and in case of more, one point is chosen (this might lead to mildly non-physical behavior).
 
 The practical includes the following basic mandatory requirements:
 
-1. For every time step, integrate the accelerations (linear and angular) into velocities, and the velocities into positions and orientations. Use an *Euler forward scheme*, as learned in class (Lecture 5). This requires changing both the position of the COM by the linear velocity, and the orientation by the angular velocity (Lecture 3). the time step difference $\Delta t$ is given by the GUI, and controllable by the menu.
+1. For every time step, integrate the accelerations (linear and angular) into velocities, and the velocities into positions and orientations. Use an *Euler forward scheme*, as learned in class (Lecture 5). This requires changing both the position of the COM by the linear velocity, and the orientation by the angular velocity (Lecture 3). the time step difference ∆t is given by the GUI, and controllable by the menu.
 1. For every time step, resolve interpenetration (Lecture 4) *linearly*. The means, given the penetration point, depth, and normal, move the objects apart linearly so they are only tangent. You may assume there is a single point of contact, and not required to solve multiple interpenetrations in the iterative manner.
 1. For every time step, resolve the collision by assigning opposite impulses to two colliding objects, and correcting their velocities instantaneously (Lecture 4). This will change both the linear and the angular velocities. The environment computes the inverse inertia tensor for you, given in the original orientation of the object (as appears in the file), and around its COM. You are responsible to transform the inverse inertia tensor to what is needed upon the moment of collision.
 
@@ -115,12 +115,12 @@ object2.mesh  density2  youngModulus2 PoissonRatio2 is_fixed2    COM2     q2
 
 Where:
 
-1. ``objectX.mesh`` - an MESH file (automatically assumed in the `data` subfolder) describing the geometry of a tetrahedral mesh. The original coordinates are translated automatically to have $(0,0,0)$ as their COM.
+1. ``objectX.mesh`` - an MESH file (automatically assumed in the `data` subfolder) describing the geometry of a tetrahedral mesh. The original coordinates are translated automatically to have (0,0,0) as their COM.
 1. ``density`` - the uniform density of the object. The program will automatically compute the total mass by the volume.
 1. ``is_fixed`` - if the object should be immobile (fixed in space) or not.
-1. ``COM`` - the initial position in the world where the object would be translated to. That means, where the COM is at time $t=0$.
-1. ``q`` - the initial orientation of the object, expressed as a quaternion that rotates the geometry to $q*object*q^{-1}$ at time $t=0$.
-1. ``youngModulus1`` and  ``PoissonRatio1`` should be ignored for now; we will use them in the $3^{rd}$ practical.
+1. ``COM`` - the initial position in the world where the object would be translated to. That means, where the COM is at time t=0.
+1. ``q`` - the initial orientation of the object, expressed as a quaternion that rotates the geometry to q *object* q^{-1} at time t=0.
+1. ``youngModulus1`` and  ``PoissonRatio1`` should be ignored for now; we will use them in the third practical.
 
 ### User interface
 
@@ -141,16 +141,16 @@ MatrixXd origV;   //original vertex positions, where COM=(0.0,0.0,0.0) - never c
 MatrixXd currV;   //current vertex position
 ```
 
-`origV` and `currV` are $\left| V \right| \times 3% times 3$ matrices encoding all the vertices of the mesh, row by row. You should **never update `origV`**. `currV` should be updated to reflect the result of every time step, and this is what you see on screen.
+`origV` and `currV` are matrices encoding all the vertices of the mesh, row by row. You should **never update `origV`**. `currV` should be updated to reflect the result of every time step, and this is what you see on screen.
 
-Quaternions represent orientations and rotations, where if the neutral (initial) orientation of a vector is $v$, and the orientation quaternion is $q$, then the final orienation is $qvq^{-1}$. The `QRot` function in the `auxfunctions.h` file implements that (and several other functions for quaternions are available in that file). Note the function `Q2RotMatrix` that produces the rotation matrix corresponding to that orientation, which should be used for the transformation of the inertia tensor.
+Quaternions represent orientations and rotations, where if the neutral (initial) orientation of a vector is v, and the orientation quaternion is q, then the final orienation is q v q^{-1}. The `QRot` function in the `auxfunctions.h` file implements that (and several other functions for quaternions are available in that file). Note the function `Q2RotMatrix` that produces the rotation matrix corresponding to that orientation, which should be used for the transformation of the inertia tensor.
 
 ### Existing software components
 
 You do not have to compute the entire algorithmic environment from scratch. The things that you are given are:
 
 1. Collision detection, as explained above.
-1. A function `initStaticProperties` computes the original COM and the inverse inertia tensor for each original MESH files, and is called by the `Mesh` constructor. you do not need the COM it computes; the constructor translates the object (`origV` coordinates) to the origin, so it always has $COM=\left(0,0,0\right)$. The constructor also initializes `currV` as a translation and rotation of `origV` to fit the prescribed values from the scene file.
+1. A function `initStaticProperties` computes the original COM and the inverse inertia tensor for each original MESH files, and is called by the `Mesh` constructor. you do not need the COM it computes; the constructor translates the object (`origV` coordinates) to the origin, so it always has COM=(0,0,0). The constructor also initializes `currV` as a translation and rotation of `origV` to fit the prescribed values from the scene file.
 
 The inverse inertia tensor you get from `initStaticProperties` is **not after applying the orientation, not even that in the scene file**. That is, what you get is the inverse inertia tensor of ``origV`` around its COM. You will have to compute the inverse inertia tensor for a given `currV`, according to the its current orientation, and it is always then around the COM of the moving object. See Lecture 3 for how to do that efficiently, and be careful to apply the correct rotation!
 
@@ -174,8 +174,8 @@ Here are detailed answers to common questions. Please read through whenever you 
 <span style="color:blue">Q:</span> I am getting "alignment" errors when compiling in Windows.
 <span style="color:blue">A:</span> Delete everything, and re-install using 64-bit configuration in `cmake-gui` from a fresh copy. If you find it doesn't work from the box, contact the Lecturer. Do not install other non-related things, or try to alter the cmake. 
 
-<span style="color:blue">Q:</span> I have an angular velocity $\overline{\omega}$, how do I integrate it?
-<span style="color:blue">A:</span> <span style="color:red">Changed answer</span>: this is fully explained in class (Lecture 5).
+<span style="color:blue">Q:</span> I have an angular velocity omega, how do I integrate it?
+<span style="color:blue">A:</span> This is fully explained in class (Lecture 5).
 
 <span style="color:blue">Q:</span> cmake fails to clone external dependencies (like glad) although they exist. What is the problem?
 <span style="color:blue">A:</span> This is a rare bug that would suggest some SSL issues with the specific computer. To counter this, clone instead the ``dev`` branch of ``libigl`` independently into the libigl folder, download all the external libraries libigl needs (eigen, glad, glfw, imgui and libigl-imgui) manually, and add them to the external folder.

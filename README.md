@@ -117,13 +117,9 @@ Where:
 
 1. ``objectX.mesh`` - an MESH file (automatically assumed in the `data` subfolder) describing the geometry of a tetrahedral mesh. The original coordinates are translated automatically to have $(0,0,0)$ as their COM.
 1. ``density`` - the uniform density of the object. The program will automatically compute the total mass by the volume.
-<br />
 1. ``is_fixed`` - if the object should be immobile (fixed in space) or not.
-<br />
 1. ``COM`` - the initial position in the world where the object would be translated to. That means, where the COM is at time $t=0$.
-<br />
 1. ``q`` - the initial orientation of the object, expressed as a quaternion that rotates the geometry to $q*object*q^{-1}$ at time $t=0$.
-<br />
 1. ``youngModulus1`` and  ``PoissonRatio1`` should be ignored for now; we will use them in the $3^{rd}$ practical.
 
 ### User interface

@@ -92,12 +92,12 @@ static Eigen::RowVector3d T1, T2, TP;
   double dx1, dy1, dz1, dx2, dy2, dz2, nx, ny, nz, len;
   FACE *f;
 
-  
+
   if (!(fp = fopen(name, "r"))) {
     printf("i/o error\n");
     exit(1);
   }
-  
+
   fscanf(fp, "%d", &p->numVerts);
   printf("Reading in %d vertices\n", p->numVerts);
   for (i = 0; i < p->numVerts; i++)
@@ -116,9 +116,9 @@ static Eigen::RowVector3d T1, T2, TP;
     /*dx1 = p->verts[f->verts[1]][X] - p->verts[f->verts[0]][X];
     dy1 = p->verts[f->verts[1]][Y] - p->verts[f->verts[0]][Y];
     dz1 = p->verts[f->verts[1]][Z] - p->verts[f->verts[0]][Z];
-      
-      
-      
+
+
+
     dx2 = p->verts[f->verts[2]][X] - p->verts[f->verts[1]][X];
     dy2 = p->verts[f->verts[2]][Y] - p->verts[f->verts[1]][Y];
     dz2 = p->verts[f->verts[2]][Z] - p->verts[f->verts[1]][Z];
@@ -210,7 +210,7 @@ void compFaceIntegrals(const Eigen::MatrixXd& V, const Eigen::RowVectorXi& f, co
 
     compProjectionIntegrals(V, f);
     w = -n.dot(V.row(f(0)));
- 
+
     k1 = 1 / n(C); k2 = k1 * k1; k3 = k2 * k1; k4 = k3 * k1;
 
     Fa = k1 * Pa;
@@ -239,7 +239,7 @@ void compVolumeIntegrals(const Eigen::MatrixXd& V, const Eigen::MatrixXi& T)
 {
     Eigen::MatrixXd N;
     igl::per_face_normals(V,T, N);
- 
+
     T0=0.0;
     T1.setZero();
     T2.setZero();
@@ -249,7 +249,7 @@ void compVolumeIntegrals(const Eigen::MatrixXd& V, const Eigen::MatrixXi& T)
         Eigen::RowVector3d absn=N.row(i).cwiseAbs();
         if (absn(0) > absn(1) && absn(0) > absn(2)) C = 0;
             else C = (absn(1) > absn(2)) ? 1 : 2;
-    
+
         A = (C + 1) % 3;
         B = (A + 1) % 3;
         compFaceIntegrals(V, T.row(i), N.row(i));
@@ -276,7 +276,7 @@ void compVolumeIntegrals(const Eigen::MatrixXd& V, const Eigen::MatrixXi& T)
 //computes mass (by uniform density), center of mass, and inertia tensor (around the COM with the canonical axis system) for a polygon
 
 void getCOMandInvIT(const Eigen::MatrixXd& V, const Eigen::MatrixXi& T, const double density, double& mass, Eigen::RowVector3d& COM, Eigen::Matrix3d& invIT){
-    
+
     compVolumeIntegrals(V, T);
 
     std::cout<<"T0 = "<<T0<<std::endl;
@@ -284,7 +284,7 @@ void getCOMandInvIT(const Eigen::MatrixXd& V, const Eigen::MatrixXi& T, const do
     std::cout<<"Tx ="<<T1[0]<<std::endl;
     std::cout<<"Ty ="<<T1[1]<<std::endl;
     std::cout<<"Tz ="<<T1[2]<<std::endl;
-  
+
     std::cout<<"Txx ="<<T2[0]<<std::endl;
     std::cout<<"Tyy = "<<T2[1]<<std::endl;
     std::cout<<"Tzz ="<<T2[2]<<std::endl;
@@ -297,9 +297,9 @@ void getCOMandInvIT(const Eigen::MatrixXd& V, const Eigen::MatrixXi& T, const do
 
     /* compute center of mass */
     COM = T1/T0;
-    
+
     Eigen::Matrix3d IT;
- 
+
     /* compute inertia tensor */
     IT(0,0) = density * (T2[1] + T2[2]);
     IT(1,1) = density * (T2[2] + T2[0]);
@@ -318,9 +318,9 @@ void getCOMandInvIT(const Eigen::MatrixXd& V, const Eigen::MatrixXi& T, const do
 
     std::cout<<"center of mass: "<<COM<<std::endl;
     std::cout<<"inertia tensor with origin at c.o.m. :"<<IT<<std::endl;
-    
+
     invIT=IT.inverse();  //expensive operation! should only happen once
-  
+
 }
 
 #endif

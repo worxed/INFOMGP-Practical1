@@ -26,7 +26,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
-    
+
 #define CCD_DOUBLE
 
 

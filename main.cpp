@@ -52,12 +52,12 @@ void createPlatform()
   2,6,7,
   0,3,4,
   3,7,4;
-  
+
   platOrientation<<1.0,0.0,0.0,0.0;
-  
+
   platT<<platF, VectorXi::Constant(12,8);
-  
-  
+
+
 }
 
 void updateMeshes(igl::opengl::glfw::Viewer &viewer)
@@ -89,7 +89,7 @@ bool key_down(igl::opengl::glfw::Viewer &viewer, unsigned char key, int modifier
       cout<<"Simulation paused"<<endl;
     return true;
   }
-  
+
   if (key == 'S')
   {
     if (!viewer.core.is_animating){
@@ -110,32 +110,32 @@ bool pre_draw(igl::opengl::glfw::Viewer &viewer)
 {
   using namespace Eigen;
   using namespace std;
-  
+
   if (viewer.core.is_animating){
     scene.updateScene(timeStep, CRCoeff);
     currTime+=timeStep;
     //cout <<"currTime: "<<currTime<<endl;
     updateMeshes(viewer);
   }
- 
-  
+
+
   return false;
 }
 
 class CustomMenu : public igl::opengl::glfw::imgui::ImGuiMenu
 {
-  
+
   virtual void draw_viewer_menu() override
   {
     // Draw parent menu
     ImGuiMenu::draw_viewer_menu();
-    
+
     // Add new group
     if (ImGui::CollapsingHeader("Algorithm Options", ImGuiTreeNodeFlags_DefaultOpen))
     {
       ImGui::InputFloat("CR Coeff",&CRCoeff,0,0,3);
-      
-      
+
+
       if (ImGui::InputFloat("Time Step", &timeStep)) {
         mgpViewer.core.animation_max_fps = (((int)1.0/timeStep));
       }
@@ -149,8 +149,8 @@ int main(int argc, char *argv[])
 {
   using namespace Eigen;
   using namespace std;
-  
-  
+
+
   // Load scene
   if (argc<3){
     cout<<"Please provide path (argument 1 and name of scene file (argument 2)!"<<endl;
@@ -160,12 +160,12 @@ int main(int argc, char *argv[])
   //create platform
   createPlatform();
   scene.addMesh(platV, platF, platT, 10000.0, true, platCOM, platOrientation);
-  
+
   //load scene from file
   scene.loadScene(std::string(argv[1]),std::string(argv[2]));
 
   scene.updateScene(0.0, CRCoeff);
-  
+
   // Viewer Settings
   for (int i=0;i<scene.meshes.size();i++){
     if (i!=0)
@@ -173,8 +173,8 @@ int main(int argc, char *argv[])
     //mgpViewer.data_list[i].set_mesh(scene.meshes[i].currV, scene.meshes[i].F);
   }
   //mgpViewer.core.align_camera_center(scene.meshes[0].currV);
-  
-  
+
+
   mgpViewer.callback_pre_draw = &pre_draw;
   mgpViewer.callback_key_down = &key_down;
   mgpViewer.core.is_animating = false;
@@ -182,10 +182,10 @@ int main(int argc, char *argv[])
   updateMeshes(mgpViewer);
   CustomMenu menu;
   mgpViewer.plugins.push_back(&menu);
-  
+
   cout<<"Press [space] to toggle continuous simulation" << endl;
   cout<<"Press 'S' to advance time step-by-step"<<endl;
-  
+
   mgpViewer.launch();
- 
+
 }
